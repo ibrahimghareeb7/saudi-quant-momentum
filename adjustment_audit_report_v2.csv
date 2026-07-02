@@ -1,0 +1,6 @@
+ticker,date,close,prev_close,daily_return,next_1d_return,next_3d_return,suspected_reason
+1180.SR,2014-11-17,32.625,27.125,0.202765,-0.057471,-0.061303,isolated_suspicious_move
+1211.SR,2023-06-08,65.775,43.5333,0.510912,-0.341695,-0.358419,likely_adjustment_issue_reversal_1d|clustered_within_5_trading_days
+1211.SR,2023-06-11,43.3,65.775,-0.341695,-0.013857,-0.017321,clustered_within_5_trading_days
+2082.SR,2022-04-05,173.8523,143.7126,0.209722,-0.099885,-0.134328,isolated_suspicious_move
+7203.SR,2022-02-17,197.6,166.4,0.1875,-0.033401,0.022267,isolated_suspicious_move

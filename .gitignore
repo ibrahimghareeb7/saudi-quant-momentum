@@ -5,4 +5,8 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .env
-prices_*.csv
+data_quality_report.csv
+suspicious_price_moves.csv
+adjustment_audit_report.csv
+ticker_quality_summary.csv
+prices_adjusted_check.csv

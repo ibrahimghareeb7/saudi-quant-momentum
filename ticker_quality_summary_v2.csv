@@ -1,0 +1,11 @@
+ticker,row_count,suspicious_moves_count,close_outside_range_count,first_date,last_date,quality_status
+1120.SR,3162,0,0,2014-01-01,2026-07-01,clean
+1150.SR,3162,0,0,2014-01-01,2026-07-01,clean
+1180.SR,2937,1,1,2014-11-12,2026-07-01,unreliable
+1211.SR,3151,2,0,2014-01-01,2026-07-01,unreliable
+2010.SR,3150,0,0,2014-01-01,2026-07-01,clean
+2082.SR,1132,1,0,2021-12-19,2026-07-01,usable_with_warnings
+2222.SR,1638,0,0,2019-12-11,2026-07-01,clean
+2380.SR,3151,0,0,2014-01-01,2026-07-01,clean
+7010.SR,3152,0,0,2014-01-01,2026-07-01,clean
+7203.SR,1088,1,0,2022-02-16,2026-07-01,usable_with_warnings
