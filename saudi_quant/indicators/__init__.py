@@ -1,1 +1,1 @@
-"""Indicator layer placeholder for later phases."""
+"""Indicator layer."""

@@ -57,11 +57,30 @@ To include adjusted close when Yahoo Finance provides it:
 python main.py --include-adjusted-close
 ```
 
+## SMA200
+
+After `prices.csv` exists, build the first indicator file:
+
+```powershell
+python main.py sma200
+```
+
+This writes:
+
+```text
+sma200.csv
+```
+
+with:
+
+```text
+date, ticker, close, sma200, above_sma200
+```
+
 ## Next Phases
 
 Only after the clean data file is stable:
 
-- SMA200
 - Relative Strength 3M / 6M
 - Liquidity Filter
 - Risk-On / Risk-Off
