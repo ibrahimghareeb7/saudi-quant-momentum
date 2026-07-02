@@ -16,6 +16,7 @@ from saudi_quant.strategy.momentum import (
     run_strategy_v2,
 )
 from saudi_quant.strategy.regime import RegimeV2Config, run_regime_v2
+from saudi_quant.strategy.regime_diagnostics import RegimeDiagnosticsV2Config, run_regime_diagnostics_v2
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -183,6 +184,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Regime output CSV path. Defaults to regime_v2.csv.",
     )
 
+    diagnostics_parser = subparsers.add_parser(
+        "regime-diagnostics-v2",
+        help="Build descriptive diagnostics from regime_v2.csv without changing the regime rule.",
+    )
+    diagnostics_parser.add_argument(
+        "--regime",
+        default="regime_v2.csv",
+        help="Input regime CSV path. Defaults to regime_v2.csv.",
+    )
+    diagnostics_parser.add_argument(
+        "--periods-output",
+        default="regime_periods_v2.csv",
+        help="Regime periods output CSV path. Defaults to regime_periods_v2.csv.",
+    )
+    diagnostics_parser.add_argument(
+        "--diagnostics-output",
+        default="regime_diagnostics_v2.csv",
+        help="Regime diagnostics output CSV path. Defaults to regime_diagnostics_v2.csv.",
+    )
+
     return parser
 
 
@@ -306,6 +327,17 @@ def main() -> None:
         print(f"Wrote {len(tasi_proxy):,} rows to {config.tasi_output_path}")
         print(f"Wrote {len(breadth):,} rows to {config.breadth_output_path}")
         print(f"Wrote {len(regime):,} rows to {config.regime_output_path}")
+        return
+
+    if args.command == "regime-diagnostics-v2":
+        config = RegimeDiagnosticsV2Config(
+            regime_path=Path(args.regime),
+            periods_output_path=Path(args.periods_output),
+            diagnostics_output_path=Path(args.diagnostics_output),
+        )
+        periods, diagnostics = run_regime_diagnostics_v2(config)
+        print(f"Wrote {len(periods):,} rows to {config.periods_output_path}")
+        print(f"Wrote {len(diagnostics):,} rows to {config.diagnostics_output_path}")
         return
 
     raise ValueError(f"Unknown command: {args.command}")

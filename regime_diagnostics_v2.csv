@@ -1,0 +1,2 @@
+valid_days,risk_on_days,risk_off_days,transition_count,avg_risk_on_duration,avg_risk_off_duration,median_risk_on_duration,median_risk_off_duration,shortest_risk_on_duration,shortest_risk_off_duration,longest_risk_on_duration,longest_risk_off_duration,year_with_most_transitions,very_short_regime_count_1_3_days
+2963,1466,1497,115,25.28,25.81,3.0,6.0,1,1,482,262,2024,53
