@@ -15,6 +15,7 @@ from saudi_quant.strategy.momentum import (
     run_ranking_review_v2,
     run_strategy_v2,
 )
+from saudi_quant.strategy.regime import RegimeV2Config, run_regime_v2
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -152,6 +153,36 @@ def build_parser() -> argparse.ArgumentParser:
         help="Ranking stability CSV path. Defaults to ranking_stability_v2.csv.",
     )
 
+    regime_parser = subparsers.add_parser(
+        "regime-v2",
+        help="Build Risk-On/Risk-Off regime files from prices_v2.csv and sma200_v2.csv.",
+    )
+    regime_parser.add_argument(
+        "--prices",
+        default="prices_v2.csv",
+        help="Input v2 prices CSV path. Defaults to prices_v2.csv.",
+    )
+    regime_parser.add_argument(
+        "--sma200",
+        default="sma200_v2.csv",
+        help="Input v2 SMA200 CSV path. Defaults to sma200_v2.csv.",
+    )
+    regime_parser.add_argument(
+        "--tasi-output",
+        default="tasi_proxy_v2.csv",
+        help="TASI proxy output CSV path. Defaults to tasi_proxy_v2.csv.",
+    )
+    regime_parser.add_argument(
+        "--breadth-output",
+        default="breadth_v2.csv",
+        help="Breadth output CSV path. Defaults to breadth_v2.csv.",
+    )
+    regime_parser.add_argument(
+        "--regime-output",
+        default="regime_v2.csv",
+        help="Regime output CSV path. Defaults to regime_v2.csv.",
+    )
+
     return parser
 
 
@@ -261,6 +292,20 @@ def main() -> None:
         top3, stability = run_ranking_review_v2(config)
         print(f"Wrote {len(top3):,} rows to {config.top3_output_path}")
         print(f"Wrote {len(stability):,} rows to {config.stability_output_path}")
+        return
+
+    if args.command == "regime-v2":
+        config = RegimeV2Config(
+            prices_path=Path(args.prices),
+            sma200_path=Path(args.sma200),
+            tasi_output_path=Path(args.tasi_output),
+            breadth_output_path=Path(args.breadth_output),
+            regime_output_path=Path(args.regime_output),
+        )
+        tasi_proxy, breadth, regime = run_regime_v2(config)
+        print(f"Wrote {len(tasi_proxy):,} rows to {config.tasi_output_path}")
+        print(f"Wrote {len(breadth):,} rows to {config.breadth_output_path}")
+        print(f"Wrote {len(regime):,} rows to {config.regime_output_path}")
         return
 
     raise ValueError(f"Unknown command: {args.command}")

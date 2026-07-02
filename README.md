@@ -136,6 +136,30 @@ ranking_stability_v2.csv
 
 No backtest is built at this stage.
 
+## Regime V2
+
+Build the temporary Risk-On/Risk-Off filter:
+
+```powershell
+python main.py regime-v2
+```
+
+This uses `prices_v2.csv` and `sma200_v2.csv` only. The TASI proxy is an equal-weighted proxy from the 10-stock universe, not the real TASI.
+
+Outputs:
+
+```text
+tasi_proxy_v2.csv
+breadth_v2.csv
+regime_v2.csv
+```
+
+The initial TASI proxy SMA200 warmup rows are marked `REGIME_UNAVAILABLE` via `regime_valid=False`; official Risk-On/Risk-Off counts should use valid rows only.
+
+Known limitation: breadth moves in discrete steps in this 10-stock universe, so the sharp `breadth > 0.55` threshold may flip frequently. No buffer is added yet.
+
+No backtest is built at this stage.
+
 ## SMA200
 
 After `prices.csv` exists, build the first indicator file:

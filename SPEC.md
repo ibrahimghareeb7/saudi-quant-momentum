@@ -217,6 +217,65 @@ ticker, days_in_top3, days_in_top5, days_in_top10, first_top3_date, last_top3_da
 
 الهدف من المراجعة هو معرفة هل النظام يطارد سهما واحدا بسبب خلل، ام يلتقط Momentum حقيقي.
 
+## Risk-On / Risk-Off V2
+
+هذا فلتر نظام سوق مؤقت، وليس TASI الحقيقي. يتم بناء TASI proxy من عوائد الاسهم العشرة المتاحة فقط.
+
+التشغيل:
+
+```text
+python main.py regime-v2
+```
+
+المدخلات:
+
+```text
+prices_v2.csv
+sma200_v2.csv
+```
+
+المخرجات:
+
+```text
+tasi_proxy_v2.csv
+breadth_v2.csv
+regime_v2.csv
+```
+
+القواعد:
+
+- استخدام العائد اليومي المتساوي الوزن للاسهم المتاحة كـ TASI proxy مؤقت.
+- بناء `tasi_proxy_close` من التراكم اليومي لمتوسط العوائد.
+- حساب `tasi_proxy_sma200`.
+- `above_tasi_sma200 = tasi_proxy_close > tasi_proxy_sma200`.
+- `breadth` هي نسبة الاسهم فوق SMA200 الخاص بها حسب التاريخ من `sma200_v2.csv`.
+- Risk-On اذا:
+  - `above_tasi_sma200 == True`
+  - و `breadth > 0.55`
+- غير ذلك Risk-Off.
+- لا يتم اضافة buffer في هذه المرحلة.
+- لا Backtest قبل مراجعة regime.
+
+اعمدة `regime_v2.csv`:
+
+```text
+date, tasi_proxy_close, tasi_proxy_sma200, above_tasi_sma200, breadth, regime_valid, regime
+```
+
+فترة بداية SMA200 للـ TASI proxy لا تحسب Risk-Off. يتم تعليمها كالتالي:
+
+```text
+regime_valid = False
+regime = REGIME_UNAVAILABLE
+```
+
+Known limitation:
+
+```text
+Regime may flip frequently because breadth threshold is sharp and breadth moves in discrete 0.1 steps.
+No hysteresis/buffer was added by design.
+```
+
 ## المراحل التالية بعد نجاح البيانات
 
 بعد تثبيت ملف الاسعار، يتم تنفيذ العناصر بالتدرج:
