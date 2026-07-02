@@ -151,6 +151,72 @@ sma200_v2.csv
 - اذا بقي اكثر من 10-15 حركة مشبوهة بعد 2014 فنحتاج مصدر بيانات افضل.
 - اذا اختفت اغلب المشاكل يمكن استخدام 2014-2026 كبداية مؤقتة للنسخة الاولى.
 
+## استراتيجية V1 المؤقتة
+
+المصدر المعتمد مؤقتا للنسخة الاولى:
+
+```text
+prices_v2.csv
+```
+
+يمنع استخدام `prices.csv` في اي Backtest.
+
+الطبقة الاولى المسموحة:
+
+```text
+python main.py strategy-v2
+```
+
+المخرجات:
+
+```text
+liquidity_v2.csv
+momentum_ranking_v2.csv
+```
+
+قواعد السيولة:
+
+- `traded_value = close * volume`.
+- `avg_traded_value_20d` هو متوسط 20 جلسة لقيمة التداول.
+- `liquid = avg_traded_value_20d >= 20_000_000`.
+
+قواعد الزخم:
+
+- `rs_63d = close / close.shift(63) - 1`.
+- `rs_126d = close / close.shift(126) - 1`.
+- `volume_expansion = volume / rolling 20-day average volume`.
+- `distance_52w_high = close / rolling 252-day high close - 1`.
+- حساب percentile ranks مقطعية حسب التاريخ.
+- `score = 0.40*rs_126d_rank + 0.30*rs_63d_rank + 0.20*volume_expansion_rank + 0.10*distance_52w_high_rank`.
+- الترتيب تنازلي حسب `score` لكل تاريخ.
+- يتم ترتيب الاسهم السائلة فقط.
+- لا Backtest قبل مراجعة ranking يدويا.
+
+مخرجات مراجعة الترتيب:
+
+```text
+python main.py ranking-review-v2
+```
+
+```text
+top3_review_v2.csv
+ranking_stability_v2.csv
+```
+
+`top3_review_v2.csv`:
+
+```text
+date, rank_1_ticker, rank_2_ticker, rank_3_ticker
+```
+
+`ranking_stability_v2.csv`:
+
+```text
+ticker, days_in_top3, days_in_top5, days_in_top10, first_top3_date, last_top3_date
+```
+
+الهدف من المراجعة هو معرفة هل النظام يطارد سهما واحدا بسبب خلل، ام يلتقط Momentum حقيقي.
+
 ## المراحل التالية بعد نجاح البيانات
 
 بعد تثبيت ملف الاسعار، يتم تنفيذ العناصر بالتدرج:

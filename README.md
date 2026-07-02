@@ -106,6 +106,36 @@ ticker_quality_summary_v2.csv
 sma200_v2.csv
 ```
 
+## Strategy V2 Inputs
+
+The first strategy layer must use `prices_v2.csv` only:
+
+```powershell
+python main.py strategy-v2
+```
+
+This writes:
+
+```text
+liquidity_v2.csv
+momentum_ranking_v2.csv
+```
+
+Review ranking concentration before any backtest:
+
+```powershell
+python main.py ranking-review-v2
+```
+
+This writes:
+
+```text
+top3_review_v2.csv
+ranking_stability_v2.csv
+```
+
+No backtest is built at this stage.
+
 ## SMA200
 
 After `prices.csv` exists, build the first indicator file:

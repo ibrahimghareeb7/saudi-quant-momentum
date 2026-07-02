@@ -9,6 +9,12 @@ from saudi_quant.data.pipeline import DataPipelineConfig, run_pipeline
 from saudi_quant.data.quality import DataQualityConfig, run_data_quality_audit
 from saudi_quant.data.v2_pipeline import V2PipelineConfig, run_v2_pipeline
 from saudi_quant.indicators.sma import SMA200Config, run_sma200_pipeline
+from saudi_quant.strategy.momentum import (
+    RankingReviewV2Config,
+    StrategyV2Config,
+    run_ranking_review_v2,
+    run_strategy_v2,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -100,6 +106,52 @@ def build_parser() -> argparse.ArgumentParser:
         help="SMA200 output CSV path. Defaults to sma200.csv.",
     )
 
+    strategy_parser = subparsers.add_parser(
+        "strategy-v2",
+        help="Build liquidity and momentum ranking files from prices_v2.csv only.",
+    )
+    strategy_parser.add_argument(
+        "--prices",
+        default="prices_v2.csv",
+        help="Input v2 prices CSV path. Defaults to prices_v2.csv.",
+    )
+    strategy_parser.add_argument(
+        "--liquidity-output",
+        default="liquidity_v2.csv",
+        help="Liquidity output CSV path. Defaults to liquidity_v2.csv.",
+    )
+    strategy_parser.add_argument(
+        "--ranking-output",
+        default="momentum_ranking_v2.csv",
+        help="Momentum ranking output CSV path. Defaults to momentum_ranking_v2.csv.",
+    )
+    strategy_parser.add_argument(
+        "--liquidity-threshold",
+        default=20_000_000,
+        type=float,
+        help="Minimum 20-day average traded value. Defaults to 20,000,000.",
+    )
+
+    review_parser = subparsers.add_parser(
+        "ranking-review-v2",
+        help="Build review files from momentum_ranking_v2.csv.",
+    )
+    review_parser.add_argument(
+        "--ranking",
+        default="momentum_ranking_v2.csv",
+        help="Input ranking CSV path. Defaults to momentum_ranking_v2.csv.",
+    )
+    review_parser.add_argument(
+        "--top3-output",
+        default="top3_review_v2.csv",
+        help="Top-3 review CSV path. Defaults to top3_review_v2.csv.",
+    )
+    review_parser.add_argument(
+        "--stability-output",
+        default="ranking_stability_v2.csv",
+        help="Ranking stability CSV path. Defaults to ranking_stability_v2.csv.",
+    )
+
     return parser
 
 
@@ -186,6 +238,29 @@ def main() -> None:
         config = SMA200Config(prices_path=Path(args.prices), output_path=Path(args.output))
         result = run_sma200_pipeline(config)
         print(f"Wrote {len(result):,} rows to {config.output_path}")
+        return
+
+    if args.command == "strategy-v2":
+        config = StrategyV2Config(
+            prices_path=Path(args.prices),
+            liquidity_output_path=Path(args.liquidity_output),
+            ranking_output_path=Path(args.ranking_output),
+            liquidity_threshold=args.liquidity_threshold,
+        )
+        liquidity, ranking = run_strategy_v2(config)
+        print(f"Wrote {len(liquidity):,} rows to {config.liquidity_output_path}")
+        print(f"Wrote {len(ranking):,} rows to {config.ranking_output_path}")
+        return
+
+    if args.command == "ranking-review-v2":
+        config = RankingReviewV2Config(
+            ranking_path=Path(args.ranking),
+            top3_output_path=Path(args.top3_output),
+            stability_output_path=Path(args.stability_output),
+        )
+        top3, stability = run_ranking_review_v2(config)
+        print(f"Wrote {len(top3):,} rows to {config.top3_output_path}")
+        print(f"Wrote {len(stability):,} rows to {config.stability_output_path}")
         return
 
     raise ValueError(f"Unknown command: {args.command}")
